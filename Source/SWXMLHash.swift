@@ -60,6 +60,11 @@ public class SWXMLHashOptions {
     /// Detect XML parsing errors... defaults to false as this library will
     /// attempt to handle HTML which isn't always XML-compatible
     public var detectParsingErrors = false
+    
+    public typealias StyleParser = (String) -> Void
+    
+    public var styleParser: StyleParser?
+    
 }
 
 /// Simple XML parser
@@ -979,6 +984,10 @@ public class XMLElement: XMLContent {
     }
 
     func addText(_ text: String) {
+        if self.name == "style" {
+            let elem = StyleElement(text: text)
+            children.append(elem)
+        }
         let elem = TextElement(text: text)
 
         children.append(elem)
@@ -1108,5 +1117,16 @@ extension XMLElement {
      */
     public func attribute<N: RawRepresentable>(by name: N) -> XMLAttribute? where N.RawValue == String {
         attribute(by: name.rawValue)
+    }
+}
+
+
+/// Models a text element
+public class StyleElement: TextElement {
+    /// The underlying text value
+    
+    init(text: String, styleParser: SWXMLHashOptions.StyleParser? = nil) {
+        super.init(text: text)
+        styleParser?(text)
     }
 }
