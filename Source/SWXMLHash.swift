@@ -985,7 +985,7 @@ public class XMLElement: XMLContent {
 
     func addText(_ text: String) {
         if self.name == "style" {
-            let elem = StyleElement(text: text)
+            let elem = StyleElement(text: text, styleParser: options.styleParser)
             children.append(elem)
         }
         let elem = TextElement(text: text)
